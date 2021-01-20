@@ -115,8 +115,9 @@ exit /b %ec_success%
         )
         setlocal disabledelayedexpansion
         
+        call :extract_first_argument i_comment %i_command%
         set "i_comment_regex=^#.*$"
-        echo %i_string%| findstr /R "%i_comment_regex%" 2> nul > nul && goto interactive_loop
+        echo %i_comment%| findstr /R "%i_comment_regex%" 2> nul > nul && goto interactive_loop
 
         call set "i_command=%%i_command:!!=%i_previous_command%%%"
         call :separate_into_arguments i_string i_delimiter i_count i_next_argument %i_command%
@@ -176,6 +177,13 @@ exit /b %ec_success%
     set "%sia_delimiter_variable_name%=%sia_delimiter%"
     set "%sia_count_variable_name%=%sia_count%"
     set "%sia_next_argument_variable_name%=%sia_next_argument%"
+exit /b %ec_success%
+
+:extract_first_argument
+    set "efa_first_argument_variable_name=%~1"
+    set "efa_first_argument=%2"
+
+    set "%efa_first_argument_variable_name%=%efa_first_argument%"
 exit /b %ec_success%
 
 :repeat_string_syntax_check
