@@ -27,5 +27,5 @@ repeat --help
 repeat abc * 10
 ```
 ```bat
-repeat abc * 10 --help (--help option is ignored)
+repeat abc * 10 --help
 ```
