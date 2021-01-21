@@ -39,7 +39,7 @@ call :init
     set "count=%~3"
     set "next_argument=%~4"
 
-    if not "%next_argument%" == "" (
+    if defined next_argument (
         echo %em_too_many_arguments%
         exit /b %ec_too_many_arguments%
     )
@@ -105,19 +105,17 @@ exit /b %ec_success%
     :interactive_loop
         set /a "i_color_code=32"
         if not %i_last_errorlevel% == 0 set /a "i_color_code=31"
+        set "i_command="
         set /p "i_command=%esc%[%i_color_code%m%i_last_errorlevel% %prompt%%esc%[0m"
+        
+        if not defined i_command goto interactive_loop
+        if "%i_command: =%" == "" goto interactive_loop
+        
         call :separate_into_arguments i_string i_delimiter i_count i_next_argument %i_command%
-
-        setlocal enabledelayedexpansion
-        if "!i_command!" == "" (
-            setlocal disabledelayedexpansion
-            goto interactive_loop
-        )
-        setlocal disabledelayedexpansion
         
         call :extract_first_argument i_comment %i_command%
         set "i_comment_regex=^#.*$"
-        echo %i_comment%| findstr /R "%i_comment_regex%" 2> nul > nul && goto interactive_loop
+        echo %i_comment%| findstr /r "%i_comment_regex%" 2> nul > nul && goto interactive_loop
 
         call set "i_command=%%i_command:!!=%i_previous_command%%%"
         call :separate_into_arguments i_string i_delimiter i_count i_next_argument %i_command%
