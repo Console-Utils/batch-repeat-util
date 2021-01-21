@@ -56,12 +56,8 @@ call :init
     set /a "ec_success=0"
 
     set /a "ec_too_many_arguments=10"
-    set /a "ec_asterisk_expected=20"
-    set /a "ec_count_number_expected=21"
 
     set "em_too_many_arguments=Other options or string repetitions are not allowed after first string repetition construction."
-    set "em_asterisk_expected=Asterisk delimiter is not specified after string to repeat."
-    set "em_count_number_expected=Repetition count is not specified after asterisk delimiter."
 
     set /a "true=0"
     set /a "false=1"
@@ -185,20 +181,26 @@ exit /b %ec_success%
 exit /b %ec_success%
 
 :repeat_string_syntax_check
+    set /a "rssc_ec_asterisk_expected=20"
+    set /a "rssc_ec_count_number_expected=21"
+
+    set "rssc_em_asterisk_expected=Asterisk delimiter is not specified after string to repeat."
+    set "rssc_em_count_number_expected=Repetition count is not specified after asterisk delimiter."
+
     set "rssc_string=%~1"
     set "rssc_delimiter=%~2"
     set "rssc_count=%~3"
 
     if not "%rssc_delimiter%" == "*" (
-        echo %em_asterisk_expected%
-        exit /b %ec_asterisk_expected%
+        echo %rssc_em_asterisk_expected%
+        exit /b %rssc_ec_asterisk_expected%
     )
 
     set "rssc_count_regex=^[0-9][0-9]*$"
     echo %rssc_count%| findstr /r "%rssc_count_regex%" 2> nul > nul
     if errorlevel 1 (
-        echo %em_count_number_expected%
-        exit /b %em_count_number_expected%
+        echo %rssc_em_count_number_expected%
+        exit /b %rssc_ec_count_number_expected%
     )
 exit /b %ec_success%
 
