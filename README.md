@@ -11,6 +11,7 @@ repeat [options] string * count
 - `-h`|`--help` - writes help and exits
 - `-v`|`--version` - writes version and exits
 - `-i`|`--interactive` - fall in interactive mode
+- `--` - ends option list
 
 If string is specified before some option then it is ignored.
 
