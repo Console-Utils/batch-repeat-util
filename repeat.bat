@@ -34,23 +34,25 @@ call :init
         exit /b %ec_success%
     )
 
-    set "string=%~1"
-    set "delimiter=%~2"
-    set "count=%~3"
-    set "next_argument=%~4"
+    if "%option%" == "--" shift
 
-    if defined next_argument (
-        echo %em_too_many_arguments%
-        exit /b %ec_too_many_arguments%
-    )
+set "string=%~1"
+set "delimiter=%~2"
+set "count=%~3"
+set "next_argument=%~4"
 
-    call :repeat_string_syntax_check "%string%" "%delimiter%" "%count%"
-    set /a "temp_errorlevel=%errorlevel%"
-    if %temp_errorlevel% gtr 0 exit /b %temp_errorlevel%
+if defined next_argument (
+    echo %em_too_many_arguments%
+    exit /b %ec_too_many_arguments%
+)
 
-    call :repeat_string string "%string%" "%count%"
-    echo.%string%
-    exit /b %ec_success%
+call :repeat_string_syntax_check "%string%" "%delimiter%" "%count%"
+set /a "temp_errorlevel=%errorlevel%"
+if %temp_errorlevel% gtr 0 exit /b %temp_errorlevel%
+
+call :repeat_string string "%string%" "%count%"
+echo.%string%
+exit /b %ec_success%
 
 :init
     set /a "ec_success=0"
@@ -77,6 +79,7 @@ exit /b %ec_success%
     echo    -h^|--help - writes help and exits
     echo    -v^|--version - writes version and exits
     echo    -i^|--interactive - fall in interactive mode
+    echo    -- - ends option list
     echo.
     echo If string is specified before some option then it is ignored.
     echo.
