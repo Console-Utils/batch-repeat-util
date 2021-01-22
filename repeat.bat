@@ -88,6 +88,12 @@ exit /b %ec_success%
     echo    c^|clear - clears screen
     echo    h^|help - writes help
     echo.
+    echo Error codes:
+    echo    - 0 - Success
+    echo    - 10 - Other options or string repetitions are not allowed after first string repetition construction.
+    echo    - 20 - Asterisk delimiter is not specified after string to repeat.
+    echo    - 21 - Repetition count is not specified after asterisk delimiter.
+    echo.
     echo Examples:
     echo    - repeat --help
     echo    - repeat abc * 10

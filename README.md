@@ -20,6 +20,12 @@ Interactive mode commands:
 - `c`|`clear` - clears screen
 - `h`|`help` - writes help
 
+# Error codes
+- `0` - Success
+- `10` - Other options or string repetitions are not allowed after first string repetition construction.
+- `20` - Asterisk delimiter is not specified after string to repeat.
+- `21` - Repetition count is not specified after asterisk delimiter.
+
 # Examples
 ```bat
 repeat --help
