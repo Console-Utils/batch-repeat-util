@@ -3,38 +3,36 @@ setlocal
 
 call :init
 
-:main_loop
-    set "option=%~1"
-    set "value=%~2"
+set "option=%~1"
 
-    set /a "is_help=%false%"
-    if "%option%" == "-h" set /a "is_help=%true%"
-    if "%option%" == "--help" set /a "is_help=%true%"
+set /a "is_help=%false%"
+if "%option%" == "-h" set /a "is_help=%true%"
+if "%option%" == "--help" set /a "is_help=%true%"
 
-    if "%is_help%" == "%true%" (
-        call :help
-        exit /b %ec_success%
-    )
+if "%is_help%" == "%true%" (
+    call :help
+    exit /b %ec_success%
+)
 
-    set /a "is_version=%false%"
-    if "%option%" == "-v" set /a "is_version=%true%"
-    if "%option%" == "--version" set /a "is_version=%true%"
+set /a "is_version=%false%"
+if "%option%" == "-v" set /a "is_version=%true%"
+if "%option%" == "--version" set /a "is_version=%true%"
 
-    if "%is_version%" == "%true%" (
-        call :version
-        exit /b %ec_success%
-    )
+if "%is_version%" == "%true%" (
+    call :version
+    exit /b %ec_success%
+)
 
-    set /a "is_interactive=%false%"
-    if "%option%" == "-i" set /a "is_interactive=%true%"
-    if "%option%" == "--interactive" set /a "is_interactive=%true%"
+set /a "is_interactive=%false%"
+if "%option%" == "-i" set /a "is_interactive=%true%"
+if "%option%" == "--interactive" set /a "is_interactive=%true%"
 
-    if "%is_interactive%" == "%true%" (
-        call :interactive
-        exit /b %ec_success%
-    )
+if "%is_interactive%" == "%true%" (
+    call :interactive
+    exit /b %ec_success%
+)
 
-    if "%option%" == "--" shift
+if "%option%" == "--" shift
 
 set "string=%~1"
 set "delimiter=%~2"
