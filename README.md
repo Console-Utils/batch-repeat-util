@@ -19,6 +19,7 @@ Interactive mode commands:
 - `q`|`quit` - exits
 - `c`|`clear` - clears screen
 - `h`|`help` - writes help
+- `--` - makes possible to use interactive mode commands as strings to repeat
 
 # Error codes
 - `0` - Success
