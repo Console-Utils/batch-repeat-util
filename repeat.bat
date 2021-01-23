@@ -65,6 +65,7 @@ exit /b %ec_success%
     set /a "false=1"
 
     set "prompt=>>> "
+    set "substitution_prompt=-^> Every !! replaced with "
 
     call :set_esc
 exit /b %ec_success%
@@ -87,6 +88,7 @@ exit /b %ec_success%
     echo    q^|quit - exits
     echo    c^|clear - clears screen
     echo    h^|help - writes help
+    echo    -- - makes possible to use interactive mode commands as strings to repeat
     echo.
     echo Error codes:
     echo    - 0 - Success
@@ -114,16 +116,23 @@ exit /b %ec_success%
         set /p "i_command=%esc%[%i_color_code%m%i_last_errorlevel% %prompt%%esc%[0m"
         
         if not defined i_command goto interactive_loop
-        if "%i_command: =%" == "" goto interactive_loop
         
-        call :separate_into_arguments i_string i_delimiter i_count i_next_argument %i_command%
-        
-        call :extract_first_argument i_comment %i_command%
-        set "i_comment_regex=^#.*$"
-        echo %i_comment%| findstr /r "%i_comment_regex%" 2> nul > nul && goto interactive_loop
-
+        set "i_command_before_substitution=%i_command%"
         call set "i_command=%%i_command:!!=%i_previous_command%%%"
-        call :separate_into_arguments i_string i_delimiter i_count i_next_argument %i_command%
+        set /a "i_color_code=35"
+        if not "%i_command_before_substitution%" == "%i_command%" echo %esc%[%i_color_code%m%substitution_prompt%"%i_previous_command%".%esc%[0m
+
+        call :extract_argument i_end_option_list 0 %i_command%
+
+        if "%i_end_option_list%" == "--" (
+            call :i_if_i_end_option_list_equal_to_end_option_list
+            call :i_repeat_string
+        )
+
+        set "i_string=%i_end_option_list%"
+
+        set "i_comment_regex=^#.*$"
+        echo %i_string%| findstr /r "%i_comment_regex%" 2> nul > nul && goto interactive_loop
 
         set /a "i_is_quit=%false%"
         if "%i_string%" == "q" set /a "i_is_quit=%true%"
@@ -149,44 +158,55 @@ exit /b %ec_success%
             goto interactive_loop
         )
 
-        set "i_previous_command=%i_command%"
+        call :extract_argument i_string 0 %i_command%
+        call :extract_argument i_delimiter 1 %i_command%
+        call :extract_argument i_count 2 %i_command%
+        call :extract_argument i_next_argument 3 %i_command%
 
-        if not "%i_next_argument%" == "" (
-            echo %em_too_many_arguments%
-            set /a "i_last_errorlevel=%ec_too_many_arguments%"
-            goto interactive_loop
-        )
+        call :i_repeat_string
+exit /b %ec_success%
 
-        call :repeat_string_syntax_check "%i_string%" "%i_delimiter%" "%i_count%"
-        set /a "i_last_errorlevel=%errorlevel%"
-        if %i_last_errorlevel% neq 0 goto interactive_loop
+:i_if_i_end_option_list_equal_to_end_option_list
+    call :extract_argument i_string 1 %i_command%
+    call :extract_argument i_delimiter 2 %i_command%
+    call :extract_argument i_count 3 %i_command%
+    call :extract_argument i_next_argument 4 %i_command%
+exit /b %ec_success%
 
-        call :repeat_string i_string "%i_string%" "%i_count%"
-        echo.%i_string%
+:i_repeat_string
+    set "i_previous_command=%i_command%"
+
+    if not "%i_next_argument%" == "" (
+        echo %em_too_many_arguments%
+        set /a "i_last_errorlevel=%ec_too_many_arguments%"
         goto interactive_loop
+    )
+    
+    call :repeat_string_syntax_check "%i_string%" "%i_delimiter%" "%i_count%"
+    set /a "i_last_errorlevel=%errorlevel%"
+    if %i_last_errorlevel% neq 0 goto interactive_loop
+
+    call :repeat_string i_string "%i_string%" "%i_count%"
+    echo.%i_string%
+    goto interactive_loop
 exit /b %ec_success%
 
-:separate_into_arguments
-    set "sia_string_variable_name=%~1"
-    set "sia_delimiter_variable_name=%~2"
-    set "sia_count_variable_name=%~3"
-    set "sia_next_argument_variable_name=%~4"
-    set "sia_string=%~5"
-    set "sia_delimiter=%~6"
-    set "sia_count=%~7"
-    set "sia_next_argument=%~8"
+:extract_argument
+    set "ea_variable_name=%~1"
+    set /a "ea_argument_index=%~2"
 
-    set "%sia_string_variable_name%=%sia_string%"
-    set "%sia_delimiter_variable_name%=%sia_delimiter%"
-    set "%sia_count_variable_name%=%sia_count%"
-    set "%sia_next_argument_variable_name%=%sia_next_argument%"
-exit /b %ec_success%
+    shift
+    shift
 
-:extract_first_argument
-    set "efa_first_argument_variable_name=%~1"
-    set "efa_first_argument=%2"
-
-    set "%efa_first_argument_variable_name%=%efa_first_argument%"
+    set /a "ea_i=0"
+    :ea_extract_argument_loop
+        if %ea_i% lss %ea_argument_index% (
+            set /a "ea_i+=1"
+            shift
+            goto ea_extract_argument_loop
+        )
+    
+    set "%ea_variable_name%=%~1"
 exit /b %ec_success%
 
 :repeat_string_syntax_check
