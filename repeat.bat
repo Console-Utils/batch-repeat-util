@@ -115,10 +115,11 @@ exit /b %ec_success%
         
         if not defined i_command goto interactive_loop
         
-        set "i_command_before_substitution=%i_command%"
+        set i_command_before_substitution=%i_command:"=%
         call set "i_command=%%i_command:!!=%i_previous_command%%%"
         set /a "i_color_code=35"
-        if not "%i_command_before_substitution%" == "%i_command%" echo %esc%[%i_color_code%m%substitution_prompt%"%i_previous_command%".%esc%[0m
+        set i_command_temp=%i_command:"=%
+        if not "%i_command_before_substitution%" == "%i_command_temp%" echo %esc%[%i_color_code%m%substitution_prompt%'%i_previous_command%'.%esc%[0m
 
         call :extract_argument i_end_option_list 0 %i_command%
 
