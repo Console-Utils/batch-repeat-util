@@ -1,19 +1,23 @@
 # repeat
 
-string repetition tool for Batch Script.
+## Description
 
-# Syntax
+String repetition tool for Batch Script.
+
+## Syntax
+
 ```bat
 repeat [options] string * count
 ```
 
-# Options
+## Options
+
 - `-h`|`--help` - writes help and exits
 - `-v`|`--version` - writes version and exits
 - `-i`|`--interactive` - fall in interactive mode
 - `--` - ends option list
 
-If string is specified before some option then it is ignored.
+### Interactive
 
 Interactive mode commands:
 - `q`|`quit` - exits
@@ -21,13 +25,17 @@ Interactive mode commands:
 - `h`|`help` - writes help
 - `--` - makes possible to use interactive mode commands as strings to repeat
 
-# Error codes
+## Return codes
 - `0` - Success
 - `10` - Other options or string repetitions are not allowed after first string repetition construction.
 - `20` - Asterisk delimiter is not specified after string to repeat.
 - `21` - Repetition count is not specified after asterisk delimiter.
 
-# Examples
+## Notes
+
+If string is specified before some option then it is ignored.
+
+## Examples
 ```bat
 repeat --help
 ```
@@ -37,3 +45,4 @@ repeat abc * 10
 ```bat
 repeat abc * 10 --help
 ```
+
