@@ -1,8 +1,8 @@
-# repeat
+# String repeater
 
 ## Description
 
-String repetition tool for Batch Script.
+Tool to duplicate passed string as much as required.
 
 ## Syntax
 
