@@ -2,6 +2,8 @@
 
 ## Description
 
+> ⚠️ This project is no longer maintained.
+
 Tool to duplicate passed string as much as required.
 
 ## Syntax
